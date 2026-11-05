@@ -48,6 +48,9 @@ class WorkflowsManager
     /** @var class-string<Workflow>|null */
     protected ?string $translatable_workflow = null;
 
+    /** @var (Closure(WorkflowInstance): ?string)|null */
+    protected ?Closure $instance_url = null;
+
     public static function ignoreMigrations(): void
     {
         static::$runs_migrations = false;
@@ -294,6 +297,31 @@ class WorkflowsManager
     public function cancel(WorkflowInstance $instance, ?Model $by = null, ?string $reason = null): WorkflowInstance
     {
         return $this->engine()->cancel($instance, $by, $reason);
+    }
+
+    /**
+     * Where to see an instance (notifications link to it): the URL resolver set
+     * with instanceUrlUsing(), else the route Route::workflowTasks() registered
+     */
+    public function instanceUrl(WorkflowInstance $instance): ?string
+    {
+        if ($this->instance_url) {
+            return ($this->instance_url)($instance);
+        }
+
+        $route = config('workflows.instance_route') ?? Routing\WorkflowRoutes::instanceRoute();
+
+        return $route && app('router')->has($route) ? route($route, $instance->getKey()) : null;
+    }
+
+    /**
+     * @param  (Closure(WorkflowInstance): ?string)|null  $resolver
+     */
+    public function instanceUrlUsing(?Closure $resolver): static
+    {
+        $this->instance_url = $resolver;
+
+        return $this;
     }
 
     /**

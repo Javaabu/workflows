@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Javaabu\FormBuilder\FormBuilderServiceProvider;
 use Javaabu\Forms\FormsServiceProvider;
 use Javaabu\Manifest\ManifestServiceProvider;
+use Javaabu\Notifications\NotificationsServiceProvider;
 use Javaabu\Permissions\Models\Permission;
 use Javaabu\Permissions\Models\Role;
 use Javaabu\Permissions\PermissionsServiceProvider;
@@ -55,6 +56,10 @@ abstract class TestCase extends BaseTestCase
             WorkflowsServiceProvider::class,
             TestServiceProvider::class,
         ];
+
+        if (class_exists(NotificationsServiceProvider::class)) {
+            $providers[] = NotificationsServiceProvider::class;
+        }
 
         if (class_exists(TranslatableServiceProvider::class)) {
             $providers[] = TranslatableServiceProvider::class;

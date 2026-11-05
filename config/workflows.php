@@ -1,5 +1,6 @@
 <?php
 
+use Javaabu\Workflows\Actions\BuiltIn;
 use Javaabu\Workflows\Models;
 use Javaabu\Workflows\Policies\WorkflowInstancePolicy;
 use Javaabu\Workflows\Policies\WorkflowPolicy;
@@ -19,7 +20,12 @@ return [
     |
     */
 
-    'actions' => [],
+    'actions' => [
+        BuiltIn\NotifyAction::class,
+        BuiltIn\UpdateModelAction::class,
+        BuiltIn\SetDataAction::class,
+        BuiltIn\WebhookAction::class,
+    ],
 
     /*
     | What happens when an action throws: continue (record it in the history,
@@ -28,6 +34,22 @@ return [
     */
 
     'actions_on_failure' => 'continue',
+
+    /*
+    | The notify action's notification. With javaabu/notifications installed
+    | it's a BaseNotification (every channel, the bell, preferences) unless
+    | javaabu is false; class replaces it with your own (constructed with a
+    | WorkflowMessage and the channels). Webhooks give up after timeout seconds.
+    */
+
+    'notifications' => [
+        'javaabu' => true,
+        'class' => null,
+    ],
+
+    'webhooks' => [
+        'timeout' => 10,
+    ],
 
     /*
     |--------------------------------------------------------------------------

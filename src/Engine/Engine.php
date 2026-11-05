@@ -275,16 +275,18 @@ class Engine
 
         StepEntered::dispatch($instance, $step->getKey(), $actor);
 
-        $this->actions->run($step->getActions(), $instance, step: $step->getKey(), actor: $actor);
-
-        if ($step->isEnd()) {
-            $this->complete($instance, $step);
+        // A task's actions run once it's assigned, so they can notify its assignees
+        if ($step->isTask()) {
+            $this->createTask($instance, $step);
+            $this->actions->run($step->getActions(), $instance, step: $step->getKey(), actor: $actor);
 
             return;
         }
 
-        if ($step->isTask()) {
-            $this->createTask($instance, $step);
+        $this->actions->run($step->getActions(), $instance, step: $step->getKey(), actor: $actor);
+
+        if ($step->isEnd()) {
+            $this->complete($instance, $step);
 
             return;
         }
