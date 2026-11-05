@@ -13,6 +13,8 @@ use Javaabu\Workflows\WorkflowsManager;
  * @method static \Javaabu\Workflows\Models\WorkflowInstance start(\Javaabu\Workflows\Models\Workflow|string $workflow, ?\Illuminate\Database\Eloquent\Model $subject = null, ?\Illuminate\Database\Eloquent\Model $by = null, \Illuminate\Http\Request|array $data = [], ?string $comment = null)
  * @method static \Javaabu\Workflows\Models\WorkflowInstance transition(\Javaabu\Workflows\Models\WorkflowInstance $instance, string $transition, ?\Illuminate\Database\Eloquent\Model $by = null, \Illuminate\Http\Request|array $data = [], ?string $comment = null, bool $force = false)
  * @method static \Javaabu\Workflows\Models\WorkflowInstance cancel(\Javaabu\Workflows\Models\WorkflowInstance $instance, ?\Illuminate\Database\Eloquent\Model $by = null, ?string $reason = null)
+ * @method static \Javaabu\Workflows\Engine\Simulation simulate(\Javaabu\Workflows\Models\Workflow|\Javaabu\Workflows\Models\WorkflowVersion|\Javaabu\Workflows\Definitions\WorkflowDefinition|string $workflow, array $data = [], array $choices = [], \Illuminate\Database\Eloquent\Model|array|null $subject = null, \Illuminate\Database\Eloquent\Model|array|null $starter = null, bool $draft = false)
+ * @method static ?string instanceUrl(\Javaabu\Workflows\Models\WorkflowInstance $instance)
  * @method static \Javaabu\Workflows\Engine\Engine engine()
  * @method static \Javaabu\Workflows\Definitions\DefinitionValidator validator()
  * @method static WorkflowsManager registerAction(\Javaabu\Workflows\Actions\Action|string|array $actions)

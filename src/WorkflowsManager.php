@@ -10,6 +10,8 @@ use Javaabu\Workflows\Actions\Action;
 use Javaabu\Workflows\Definitions\DefinitionValidator;
 use Javaabu\Workflows\Definitions\WorkflowDefinition;
 use Javaabu\Workflows\Engine\Engine;
+use Javaabu\Workflows\Engine\Simulation;
+use Javaabu\Workflows\Engine\Simulator;
 use Javaabu\Workflows\Exceptions\WorkflowException;
 use Javaabu\Workflows\Models\Workflow;
 use Javaabu\Workflows\Models\WorkflowHistory;
@@ -292,6 +294,19 @@ class WorkflowsManager
     public function transition(WorkflowInstance $instance, string $transition, ?Model $by = null, Request|array $data = [], ?string $comment = null, bool $force = false): WorkflowInstance
     {
         return $this->engine()->transition($instance, $transition, $by, $data, $comment, $force);
+    }
+
+    /**
+     * The workflow tester: the path a run would take with sample data. See Engine\Simulator.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $choices
+     * @param  Model|array<string, mixed>|null  $subject
+     * @param  Model|array<string, mixed>|null  $starter
+     */
+    public function simulate(Workflow|WorkflowVersion|WorkflowDefinition|string $workflow, array $data = [], array $choices = [], Model|array|null $subject = null, Model|array|null $starter = null, bool $draft = false): Simulation
+    {
+        return app(Simulator::class)->simulate($workflow, $data, $choices, $subject, $starter, $draft);
     }
 
     public function cancel(WorkflowInstance $instance, ?Model $by = null, ?string $reason = null): WorkflowInstance

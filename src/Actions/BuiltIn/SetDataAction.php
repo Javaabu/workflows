@@ -55,6 +55,11 @@ class SetDataAction extends Action
         $context->instance->save();
     }
 
+    public function simulate(ActionContext $context): void
+    {
+        $context->instance->data = [...($context->instance->data ?? []), ...(array) $context->interpolate((array) $context->setting('values', []))];
+    }
+
     public function describe(ActionContext $context): string
     {
         $values = (array) $context->interpolate((array) $context->setting('values', []));

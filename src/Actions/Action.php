@@ -101,6 +101,15 @@ abstract class Action
     }
 
     /**
+     * In the workflow tester, instead of handle(): change the (unsaved) instance's
+     * data if the action would, so later conditions see it. Nothing else may happen here.
+     */
+    public function simulate(ActionContext $context): void
+    {
+        //
+    }
+
+    /**
      * What it would do, for the workflow tester (nothing is run there)
      */
     public function describe(ActionContext $context): string
