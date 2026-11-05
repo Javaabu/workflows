@@ -1,0 +1,120 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# The unreleased javaabu/* dependencies come from VCS repositories; the job's own
+# token keeps Composer within GitHub's API limits
+env:
+  COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ github.token }}"}}'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.4, 8.5]
+        laravel: [12.*, 13.*]
+        stability: [prefer-lowest, prefer-stable]
+        include:
+          - laravel: 12.*
+            testbench: 10.*
+          - laravel: 13.*
+            testbench: 11.*
+
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
+
+    env:
+      COVERAGE: ${{ matrix.php == '8.4' && matrix.laravel == '13.*' && matrix.stability == 'prefer-stable' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          coverage: ${{ env.COVERAGE == 'true' && 'pcov' || 'none' }}
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+
+      # javaabu/helpers pins javaabu/settings ^1, which breaks installs next to settings v2
+      - name: No javaabu/helpers or javaabu/settings v1 in production dependencies
+        run: |
+          tree="$(composer show --tree --no-dev)"
+          if echo "$tree" | grep -q "javaabu/helpers"; then echo "javaabu/helpers must not be a production dependency."; exit 1; fi
+          if echo "$tree" | grep -Eq "javaabu/settings (\^|~|v)?1"; then echo "javaabu/settings ^1 must not be a production dependency."; exit 1; fi
+
+      - name: Execute tests
+        if: env.COVERAGE != 'true'
+        run: vendor/bin/phpunit
+
+      - name: Execute tests with coverage
+        if: env.COVERAGE == 'true'
+        run: vendor/bin/phpunit --coverage-clover=clover.xml
+
+      - name: Upload coverage to Codecov
+        if: env.COVERAGE == 'true'
+        uses: codecov/codecov-action@v5
+        with:
+          files: clover.xml
+          flags: php
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  without-optional:
+    runs-on: ubuntu-latest
+
+    name: Without optional packages
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          coverage: none
+
+      - name: Install dependencies without optional packages
+        run: |
+          composer remove --dev inertiajs/inertia-laravel javaabu/notifications javaabu/translatable laravel/ai --no-interaction --no-update
+          composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Execute tests
+        run: vendor/bin/phpunit
+
+  pint:
+    runs-on: ubuntu-latest
+
+    name: Pint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Check code style
+        run: vendor/bin/pint --test
+
