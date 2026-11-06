@@ -20,3 +20,4 @@ Initial development of v1.0:
 - Optional javaabu/translatable support and an optional laravel/ai assistant.
 - English and Dhivehi, right to left.
 - Docs, `llms.txt`, the Laravel Boost guideline and skill.
+- The Blade entry is a plain script (`builder.ts`) and React, `react-dom` and `@vitejs/plugin-react` are declared for manifest's `pages` scope, so Blade apps using the prebuilt entry aren't asked for them. Inertia pages and `@javaabu/workflows` import the package styles, so Vite bundles them; every Blade page loads `workflows::styles`.

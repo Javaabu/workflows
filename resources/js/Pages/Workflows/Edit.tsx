@@ -1,3 +1,5 @@
+// Vite bundles the package styles with every page that uses them
+import "../../../css/workflows.css"
 import { StencilForm } from "@javaabu/stencil"
 import { PageHeader } from "../../components/PageHeader"
 import { StatusAlert } from "../../components/StatusAlert"

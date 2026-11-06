@@ -4,7 +4,13 @@
  * `[data-workflow-graph]`, from their JSON `data-props`, as the Blade pages
  * render them. React is bundled in. It also asks before submitting forms with
  * `data-confirm`. Elements added later mount with `mountWorkflows(root)`.
+ *
+ * It's a .ts file (createElement, no JSX) registered with script(), not
+ * react(): apps load the prebuilt file, so manifest:check doesn't ask Blade
+ * apps for React's build packages. It imports no CSS: Blade pages load
+ * `workflows::styles` themselves.
  */
+import { createElement } from "react"
 import { createRoot, type Root } from "react-dom/client"
 import { WorkflowBuilder } from "../builder/WorkflowBuilder"
 import { WorkflowGraph } from "../builder/WorkflowGraph"
@@ -29,12 +35,12 @@ export function mountBuilder(element: HTMLElement): Root | null {
 
   const root = createRoot(element)
   root.render(
-    <WorkflowBuilder
-      builder={data.builder}
-      strings={data.strings}
-      saveUrl={data.can.update ? data.urls.save : undefined}
-      csrf={data.csrf}
-    />,
+    createElement(WorkflowBuilder, {
+      builder: data.builder,
+      strings: data.strings,
+      saveUrl: data.can.update ? data.urls.save : undefined,
+      csrf: data.csrf,
+    }),
   )
   roots.set(element, root)
   return root
@@ -49,12 +55,12 @@ export function mountGraph(element: HTMLElement): Root | null {
 
   const root = createRoot(element)
   root.render(
-    <WorkflowGraph
-      definition={data.definition}
-      catalog={data.catalog}
-      strings={data.strings}
-      highlight={data.highlight}
-    />,
+    createElement(WorkflowGraph, {
+      definition: data.definition,
+      catalog: data.catalog,
+      strings: data.strings,
+      highlight: data.highlight,
+    }),
   )
   roots.set(element, root)
   return root

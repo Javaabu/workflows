@@ -17,16 +17,21 @@ class FrontendAssetsTest extends TestCase
     {
         $this->assertTrue(Manifest::has(Assets::STYLES));
         $this->assertTrue(Manifest::has(Assets::BUILDER));
-        $this->assertSame(AssetTypes::REACT, Manifest::find(Assets::BUILDER)->type);
+        // A plain script, so Blade apps using the prebuilt file aren't asked for React's build packages
+        $this->assertSame(AssetTypes::TS, Manifest::find(Assets::BUILDER)->type);
 
         $package = Manifest::package(Assets::PACKAGE);
         $this->assertSame('js', $package->jsPath());
         $this->assertFileExists(dirname(__DIR__, 2) . '/resources/js/index.ts');
-        $this->assertFileExists(dirname(__DIR__, 2) . '/dist/.vite/manifest.json');
+
+        $dist = json_decode(file_get_contents(dirname(__DIR__, 2) . '/dist/.vite/manifest.json'), true);
+        $this->assertArrayHasKey('resources/js/blade/builder.ts', $dist);
+        $this->assertArrayHasKey('resources/css/workflows.css', $dist);
+        $this->assertArrayNotHasKey('css', $dist['resources/js/blade/builder.ts'], 'The Blade entry loads workflows::styles; it bundles no CSS of its own');
     }
 
     #[Test]
-    public function only_the_pages_need_the_react_form_libraries(): void
+    public function it_scopes_the_react_packages_to_the_pages(): void
     {
         $package = Manifest::package(Assets::PACKAGE);
 
@@ -36,25 +41,55 @@ class FrontendAssetsTest extends TestCase
         $this->assertArrayNotHasKey('@javaabu/forms', $assets);
         $this->assertArrayNotHasKey('@javaabu/onu', $assets);
         $this->assertArrayNotHasKey('@inertiajs/react', $assets);
+        $this->assertArrayNotHasKey('react', $assets);
+        $this->assertArrayNotHasKey('@vitejs/plugin-react', $assets);
         $this->assertArrayHasKey('@javaabu/forms', $pages);
+        $this->assertArrayHasKey('react', $pages);
+        $this->assertArrayHasKey('react-dom', $pages);
+        $this->assertArrayHasKey('@vitejs/plugin-react', $pages);
         $this->assertArrayHasKey('@javaabu/onu', $pages);
         $this->assertArrayHasKey('@inertiajs/react', $pages);
     }
 
     #[Test]
-    public function manifest_check_asks_blade_apps_only_for_what_the_blade_entry_needs(): void
+    public function it_asks_blade_apps_nothing_for_the_prebuilt_blade_entry(): void
     {
-        Artisan::call('manifest:check', ['--scope' => ['assets'], '--json' => true]);
-        $rows = json_decode(Artisan::output(), true) ?? [];
-
-        $this->assertNotSame([], $rows);
-
-        $ours = array_values(array_filter($rows, fn (array $row) => in_array(Assets::PACKAGE, $row['needed_by'], true)));
-        $names = array_column($ours, 'name');
+        $names = $this->checked(['assets']);
 
         $this->assertNotContains('@javaabu/forms', $names);
         $this->assertNotContains('@javaabu/onu', $names);
         $this->assertNotContains('@inertiajs/react', $names);
+        $this->assertNotContains('react', $names);
+        $this->assertNotContains('react-dom', $names);
+        $this->assertNotContains('@vitejs/plugin-react', $names);
+    }
+
+    #[Test]
+    public function it_asks_apps_with_pages_or_their_own_build_of_the_entry_for_react(): void
+    {
+        $names = $this->checked(['pages']);
+
+        $this->assertContains('@javaabu/forms', $names);
+        $this->assertContains('@javaabu/onu', $names);
+        $this->assertContains('@inertiajs/react', $names);
         $this->assertContains('react', $names);
+        $this->assertContains('react-dom', $names);
+        $this->assertContains('@vitejs/plugin-react', $names);
+    }
+
+    /**
+     * The npm packages manifest:check lists for this package
+     *
+     * @param  array<int, string>  $scopes
+     * @return array<int, string>
+     */
+    protected function checked(array $scopes): array
+    {
+        Artisan::call('manifest:check', ['--scope' => $scopes, '--json' => true]);
+        $rows = json_decode(Artisan::output(), true) ?? [];
+
+        $ours = array_filter($rows, fn (array $row) => in_array(Assets::PACKAGE, $row['needed_by'], true));
+
+        return array_values(array_column($ours, 'name'));
     }
 }

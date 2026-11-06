@@ -22,13 +22,30 @@ Optional:
 
 # Frontend
 
-The Blade pages need no JavaScript build: the builder's Blade entry (`workflows::builder`) is prebuilt in `dist/` with React bundled in. If your app builds it with its own Vite, it needs `react`, `react-dom` and `@vitejs/plugin-react`, as for any React asset.
+The Blade pages need no JavaScript build: the builder's Blade entry (`workflows::builder`) is prebuilt in `dist/` with React bundled in, so `php artisan manifest:check` asks a Blade app for nothing from this package.
+
+manifest's Vite plugin adds every registered asset to the app's build, so a Blade app that uses it builds the entry too, and needs `react` and `react-dom` for that. Either install them, or leave the entry out of your build and let the prebuilt file load:
+
+```js
+// vite.config.js
+const assets = manifest({ input: false })
+
+export default defineConfig({
+  plugins: [
+    laravel({ input: ["resources/js/app.js", ...assets.inputs().filter((input) => !input.includes("workflows/resources/js/blade/"))] }),
+    assets,
+  ],
+})
+```
 
 The Inertia React pages (and anything you import from `@javaabu/workflows`) need:
 
 - React 19 and `@inertiajs/react`
 - [@javaabu/forms](https://github.com/Javaabu/react-forms)
 - [@javaabu/onu](https://www.npmjs.com/package/@javaabu/onu)
+- `@vitejs/plugin-react`
 - manifest's Vite plugin, which resolves `@javaabu/workflows`, `@javaabu/form-builder` and `@javaabu/stencil`
 
-These are declared for manifest's `pages` scope, so a Blade-only app isn't asked for them. Run `php artisan manifest:check` to see anything that's missing.
+These are declared for manifest's `pages` scope, so a Blade-only app isn't asked for them. Run `php artisan manifest:check` to see anything that's missing (`--scope=pages` lists them in an app without an Inertia adapter, such as a Blade app that builds the Blade entry itself).
+
+The pages import the package's styles (`resources/css/workflows.css`), and so does `@javaabu/workflows`, so Vite bundles them: there's nothing to add to your app's CSS.

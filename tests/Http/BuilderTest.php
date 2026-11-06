@@ -38,6 +38,20 @@ class BuilderTest extends TestCase
     }
 
     #[Test]
+    public function it_loads_the_styles_on_every_blade_page_and_the_builder_only_where_it_mounts(): void
+    {
+        LeaveRequestWorkflow::definition()->sync();
+
+        $this->actingAs($this->editor())->get('/workflows')->assertOk()
+            ->assertSee('data-manifest-asset="workflows::styles"', false)
+            ->assertDontSee('data-manifest-asset="workflows::builder"', false);
+
+        $this->actingAs($this->editor())->get('/workflows/leave-request')->assertOk()
+            ->assertSee('data-manifest-asset="workflows::styles"', false)
+            ->assertSee('data-manifest-asset="workflows::builder"', false);
+    }
+
+    #[Test]
     public function it_creates_a_workflow_with_a_starter_draft(): void
     {
         $this->actingAs($this->editor())->get('/workflows/create')->assertOk()->assertSee('name="key"', false);

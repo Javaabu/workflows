@@ -11,3 +11,4 @@
 - **Calling a webhook inline.** The `webhook` action is queued; your own slow actions should implement `ShouldQueue` too.
 - **Renaming a step's key on a published workflow.** Instances and history refer to keys. Add a step and move the transitions instead.
 - **Physical CSS or untranslated strings in custom views.** Use logical utilities (`ms-`, `ps-`, `text-start`) and `__()` with Dhivehi in `lang/dv.json`.
+- **Importing workflows.css by hand on Inertia pages, or `react()` for the Blade entry.** The pages and `@javaabu/workflows` import the styles, so Vite bundles them. The Blade entry is a plain script loaded prebuilt; `manifest:check --scope=pages` lists React and `@vitejs/plugin-react` for apps that build it themselves.

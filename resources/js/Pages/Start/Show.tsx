@@ -1,3 +1,5 @@
+// Vite bundles the package styles with every page that uses them
+import "../../../css/workflows.css"
 import { Button, Form, Textarea } from "@javaabu/forms"
 import { StencilFields } from "@javaabu/stencil"
 import { PageHeader } from "../../components/PageHeader"

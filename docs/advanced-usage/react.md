@@ -29,6 +29,11 @@ The pages use `@javaabu/forms` (set `router={inertia}` on its `FormsProvider`) a
 
 # Blade
 
-`workflows::builder` mounts the builder on `[data-workflow-builder]` and the diagram on `[data-workflow-graph]`, from their JSON `data-props`; mount ones added later with `window.JavaabuWorkflows.mount(root)`. It also asks before submitting forms with `data-confirm`. It's prebuilt with React, so Blade apps need no React of their own.
+`workflows::builder` mounts the builder on `[data-workflow-builder]` and the diagram on `[data-workflow-graph]`, from their JSON `data-props`; mount ones added later with `window.JavaabuWorkflows.mount(root)`. It also asks before submitting forms with `data-confirm`. It's prebuilt with React, so Blade apps need no React of their own. It's registered as a plain script (`resources/js/blade/builder.ts`), so `manifest:check` doesn't ask Blade apps for React; see [Requirements](../requirements.md#frontend) if your app builds it with its own Vite.
 
-The builder's styles are `workflows::styles` (`resources/css/workflows.css`), with logical properties only. They use your theme's `--border`, `--muted`, `--primary`, … variables when it has them.
+# Styles
+
+The styles are `workflows::styles` (`resources/css/workflows.css`), with logical properties only. They use your theme's `--border`, `--muted`, `--primary`, … variables when it has them.
+
+- **Blade:** every page loads `workflows::styles` (the page header requires it). The Blade entry bundles no CSS of its own.
+- **Inertia and React:** every page imports the stylesheet, and so does `@javaabu/workflows`, so Vite bundles it with whatever uses the package; manifest's injected tags don't reach Inertia responses. If you import a component by its own path (`@javaabu/workflows/builder/WorkflowBuilder`), import it from `@javaabu/workflows` instead, or add `@import "../../vendor/javaabu/workflows/resources/css/workflows.css";` to your app's CSS.

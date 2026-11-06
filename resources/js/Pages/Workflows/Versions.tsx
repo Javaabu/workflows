@@ -1,3 +1,5 @@
+// Vite bundles the package styles with every page that uses them
+import "../../../css/workflows.css"
 import { Badge } from "../../components/Badges"
 import { PageHeader } from "../../components/PageHeader"
 import type { WorkflowsVersionsProps } from "../../types"

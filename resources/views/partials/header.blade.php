@@ -1,4 +1,5 @@
-{{-- A page's heading: an optional back link, the title, a description and actions --}}
+{{-- A page's heading: an optional back link, the title, a description and actions. Every page has one, so it loads the package styles --}}
+@manifestRequire('workflows::styles')
 <div class="flex flex-wrap items-start justify-between gap-4">
     <div class="flex min-w-0 flex-col gap-1">
         @isset($back_url)

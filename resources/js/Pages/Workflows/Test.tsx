@@ -1,3 +1,5 @@
+// Vite bundles the package styles with every page that uses them
+import "../../../css/workflows.css"
 import { Alert, Button, Checkbox, Form, Textarea } from "@javaabu/forms"
 import * as React from "react"
 import { PageHeader } from "../../components/PageHeader"

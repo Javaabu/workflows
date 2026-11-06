@@ -8,7 +8,7 @@ import { defineConfig } from "vite"
  * The Blade entry bundles React and the builder, so Blade apps need no React of
  * their own. The Inertia pages aren't prebuilt: apps build them from resources/js.
  */
-export const entries = ["resources/js/blade/builder.tsx", "resources/css/workflows.css"]
+export const entries = ["resources/js/blade/builder.ts", "resources/css/workflows.css"]
 
 export default defineConfig({
   // Relative URLs, as javaabu/manifest serves dist/ from a sub-path.

@@ -8,10 +8,10 @@
     "src": "resources/css/workflows.css",
     "isEntry": true
   },
-  "resources/js/blade/builder.tsx": {
-    "file": "assets/builder-sSAe2RID.js",
+  "resources/js/blade/builder.ts": {
+    "file": "assets/builder-u8NOmkok.js",
     "name": "builder",
-    "src": "resources/js/blade/builder.tsx",
+    "src": "resources/js/blade/builder.ts",
     "isEntry": true
   }
 }

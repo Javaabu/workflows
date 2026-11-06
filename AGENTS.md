@@ -21,7 +21,7 @@ These are public contracts: the definition classes and JSON format, `WorkflowsMa
 | `src/Ai` | `WorkflowAssistant`, `WorkflowAssistantAgent` (optional laravel/ai) |
 | `src/Support` | `Translations` (optional translatable, feature-detected), `Text`, `Strings` (page strings), `SampleModel` |
 | `resources/views` | Blade pages (javaabu/forms) and partials |
-| `resources/js` | TypeScript: `builder/` (WorkflowBuilder, Canvas, Inspector, definition helpers), the Inertia `Pages/`, `components/`, the Blade entry `blade/builder.tsx` |
+| `resources/js` | TypeScript: `builder/` (WorkflowBuilder, Canvas, Inspector, definition helpers), the Inertia `Pages/`, `components/`, the Blade entry `blade/builder.ts` |
 | `resources/css/workflows.css` | Styles (logical properties only) |
 | `dist/` | Prebuilt Blade entry and styles, **committed** |
 | `lang/en.json`, `lang/dv.json` | Translations; English strings are the keys |

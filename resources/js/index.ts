@@ -1,4 +1,6 @@
-// What apps import as @javaabu/workflows (through javaabu/manifest)
+// What apps import as @javaabu/workflows (through javaabu/manifest).
+// Importing it brings the package styles along, so Vite bundles them.
+import "../css/workflows.css"
 
 export { WorkflowBuilder, ListView, type WorkflowBuilderProps } from "./builder/WorkflowBuilder"
 export { WorkflowGraph, type WorkflowGraphProps } from "./builder/WorkflowGraph"
