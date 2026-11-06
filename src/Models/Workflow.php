@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Javaabu\Translatable\Contracts\Translatable;
 use Javaabu\Workflows\Definitions\WorkflowDefinition;
 use Javaabu\Workflows\Exceptions\WorkflowException;
 use Javaabu\Workflows\Facades\Workflows;
+use Javaabu\Workflows\Support\Translations;
 
 /**
  * A workflow: its key, name and subject, and its versions. Instances start on
@@ -253,6 +255,34 @@ class Workflow extends Model
     }
 
     /**
+     * The name or description: a map of locale => text with javaabu/translatable
+     * and several languages, the attribute otherwise
+     *
+     * @return string|array<string, string>|null
+     */
+    public function text(string $attribute): string|array|null
+    {
+        $value = $this->getAttribute($attribute);
+        $locales = Translations::locales();
+
+        if (count($locales) <= 1 || ! $this instanceof Translatable || ! $this->isTranslatable($attribute)) {
+            return $value;
+        }
+
+        $values = [];
+
+        foreach ($locales as $locale) {
+            $text = $this->translate($attribute, $locale, false);
+
+            if ($text !== null && $text !== '') {
+                $values[$locale] = (string) $text;
+            }
+        }
+
+        return $values === [] ? $value : $values;
+    }
+
+    /**
      * The definition of the published version (or the draft, or the current one)
      */
     public function definition(bool $draft = false): ?WorkflowDefinition
@@ -264,8 +294,8 @@ class Workflow extends Model
         }
 
         return $version->definition($this->key)
-            ->name($this->name)
-            ->description($this->description)
+            ->name($this->text('name'))
+            ->description($this->text('description'))
             ->for($this->subject_type)
             ->locked($this->is_locked);
     }
