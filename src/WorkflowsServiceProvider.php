@@ -2,15 +2,22 @@
 
 namespace Javaabu\Workflows;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Javaabu\Manifest\Concerns\RegistersAssets;
+use Javaabu\Manifest\Package;
 use Javaabu\Permissions\Permissions;
+use Javaabu\Workflows\Assets\Assets;
 use Javaabu\Workflows\Definitions\DefinitionValidator;
 use Javaabu\Workflows\Engine\Engine;
 use Javaabu\Workflows\Policies\WorkflowInstancePolicy;
 use Javaabu\Workflows\Policies\WorkflowPolicy;
+use Javaabu\Workflows\Routing\WorkflowRoutes;
 
 class WorkflowsServiceProvider extends ServiceProvider
 {
+    use RegistersAssets;
+
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/workflows.php', 'workflows');
@@ -24,8 +31,11 @@ class WorkflowsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadJsonTranslationsFrom(__DIR__ . '/../lang');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'workflows');
 
+        $this->registerFrontendAssets();
         $this->registerActions();
+        $this->registerRouteMacros();
         $this->registerPermissions();
 
         if ($this->app->runningInConsole()) {
@@ -38,11 +48,33 @@ class WorkflowsServiceProvider extends ServiceProvider
     }
 
     /**
+     * The Inertia pages (workflows::Workflows/Index, …), the components apps
+     * import as @javaabu/workflows, the styles and the Blade entry
+     */
+    protected function registerFrontendAssets(): void
+    {
+        $this->registerAssets(Assets::PACKAGE, __DIR__ . '/../resources', function (Package $package) {
+            Assets::register($package);
+        });
+    }
+
+    /**
      * The actions in config('workflows.actions')
      */
     protected function registerActions(): void
     {
         $this->app->make(WorkflowsManager::class)->registerAction((array) config('workflows.actions', []));
+    }
+
+    protected function registerRouteMacros(): void
+    {
+        Route::macro('workflows', function (array $options = []) {
+            WorkflowRoutes::admin($this, $options);
+        });
+
+        Route::macro('workflowTasks', function (array $options = []) {
+            WorkflowRoutes::tasks($this, $options);
+        });
     }
 
     /**
@@ -71,5 +103,9 @@ class WorkflowsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../lang' => lang_path('vendor/workflows'),
         ], 'workflows-translations');
+
+        $this->publishes([
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/workflows'),
+        ], 'workflows-views');
     }
 }

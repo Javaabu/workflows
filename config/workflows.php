@@ -1,6 +1,7 @@
 <?php
 
 use Javaabu\Workflows\Actions\BuiltIn;
+use Javaabu\Workflows\Http\Controllers;
 use Javaabu\Workflows\Models;
 use Javaabu\Workflows\Policies\WorkflowInstancePolicy;
 use Javaabu\Workflows\Policies\WorkflowPolicy;
@@ -122,15 +123,54 @@ return [
     'views' => env('WORKFLOWS_VIEWS', 'blade'),
 
     /*
+    | The Blade layout the pages extend, and the section they fill. per_page is
+    | the length of lists; dates show in datetime_format (translated).
+    */
+
+    'layout' => 'layouts.app',
+
+    'layout_section' => 'content',
+
+    'per_page' => 20,
+
+    'datetime_format' => 'j F Y, H:i',
+
+    /*
+    | The models workflows can be about, for the settings page's subject list:
+    | morph alias or class => label. Empty: a text input.
+    */
+
+    'subjects' => [],
+
+    /*
+    | The route notifications link to for an instance. Null: the first
+    | Route::workflowTasks()'s instance page. Workflows::instanceUrlUsing()
+    | overrides both.
+    */
+
+    'instance_route' => null,
+
+    /*
     |--------------------------------------------------------------------------
-    | Authorization
+    | Controllers and authorization
     |--------------------------------------------------------------------------
     |
-    | The policies are the package defaults; apps can also override them with
+    | Replace a controller with a subclass, or pass `controllers` to
+    | Route::workflows() and Route::workflowTasks(). The policies are the
+    | package defaults; apps can also override them with
     | config('permissions.policies') or Gate::policy(). Turn off
     | register_permissions to register your own.
     |
     */
+
+    'controllers' => [
+        'workflows' => Controllers\WorkflowsController::class,
+        'tester' => Controllers\TesterController::class,
+        'instances' => Controllers\InstancesController::class,
+        'tasks' => Controllers\TasksController::class,
+        'start' => Controllers\StartController::class,
+        'assistant' => Controllers\AssistantController::class,
+    ],
 
     'policies' => [
         'workflow' => WorkflowPolicy::class,
@@ -138,5 +178,26 @@ return [
     ],
 
     'register_permissions' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | AI assistant
+    |--------------------------------------------------------------------------
+    |
+    | With laravel/ai installed, the builder has an assistant that builds a
+    | workflow, or changes one, from a description, as a draft to review.
+    | provider and model pick what laravel/ai uses (null: its defaults);
+    | attempts is how many answers it gets to produce a valid workflow.
+    |
+    */
+
+    'assistant' => [
+        'enabled' => env('WORKFLOWS_ASSISTANT', true),
+        'provider' => env('WORKFLOWS_ASSISTANT_PROVIDER'),
+        'model' => env('WORKFLOWS_ASSISTANT_MODEL'),
+        'timeout' => 120,
+        'attempts' => 2,
+        'max_length' => 4000,
+    ],
 
 ];
