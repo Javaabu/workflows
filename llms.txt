@@ -1,0 +1,51 @@
+# javaabu/workflows
+
+> Dynamic workflows for Laravel. A workflow is steps (start, task, decision, action, end) joined by transitions with labels, conditions and actions; tasks have assignees (the starter, users, roles, permissions, the subject's relations, earlier actors, custom types). Definitions are versioned (drafts, immutable published versions; instances keep theirs), defined fluently in seeders (Workflows::define()->steps([...])->transitions([...])->sync()), in a keyboard-accessible drag-and-drop builder (React, in Inertia and mounted in Blade), or by an optional laravel/ai assistant. Instances keep their data, tasks and history, and fire events. Steps collect data with javaabu/form-builder forms. Actions: notify (javaabu/notifications when installed), update_model, set_data, webhook, and your own. A tester simulates runs with sample data. Pages in Blade and Inertia React (Route::workflows(), Route::workflowTasks()), permissions through javaabu/permissions, optional javaabu/translatable. English and Dhivehi, RTL.
+
+Paths are relative to this file. In a project, that's vendor/javaabu/workflows/.
+
+## Rules
+
+- Define code-owned workflows in a seeder with `Workflows::define('key')->for(Model::class)->steps([...])->transitions([...])->sync()`. `sync()` validates and is idempotent; `->locked()` keeps a workflow to code. Admins build others on `Route::workflows()` pages.
+- Exactly one `Step::start()`, at least one `Step::end()`. Every step but an end needs a way out and a path to an end. Give every decision one transition without conditions (the default).
+- Move instances only with `$model->startWorkflow()` / `Workflows::start()`, `$instance->transition($key, by: $user, data: $request, comment: …)` and `cancel()`. Never write `current_step`, `status` or `outcome`.
+- Never change a published version: change the draft (`$workflow->draft()`, the builder, `sync()`), then `$workflow->publish()`. Instances stay on the version they started with; don't rename step keys on published workflows.
+- Decide who acts with `$instance->canAct($user)` / the policy's `act`, and list inboxes with `WorkflowTask::query()->open()->assignedTo($user)`. Users are morphs: nothing assumes `App\Models\User` or the `web` guard; pass `guard` to the route macros.
+- Text (names, labels, notification text) is a string or a locale map `['en' => …, 'dv' => …]`: read it with `Workflows::text()`.
+- Collect step data with form-builder forms (`->form('key')`); use `->skipForm()` on transitions like Reject. Conditions read `days`, `subject.amount`, `starter.name`.
+- Put workflow side effects in actions (`->runs('notify', [...])`), custom ones extending `Javaabu\Workflows\Actions\Action` registered with `Workflows::registerAction()`; implement `ShouldQueue` for slow ones. Use the events for app-wide concerns.
+- Register routes with `Route::workflows([...])` and `Route::workflowTasks([...])` inside the `web` group, and run `php artisan permissions:sync`. Override controllers from `config('workflows.controllers')` and policies with `Gate::policy()`.
+- Test paths with `Workflows::simulate()`, side effects with Laravel's fakes, the assistant with `WorkflowAssistantAgent::fake()`. Use Thaana in tests of user-facing behaviour, and logical CSS in views.
+
+## Docs
+
+- [Introduction](docs/intro.md): what the package does
+- [Requirements](docs/requirements.md): PHP, Laravel, dependencies, optional packages and the npm packages pages need
+- [Installation & Setup](docs/installation-and-setup.md): installing, migrating, permissions, routes, subjects, views, a first workflow
+- [AI assistants](docs/ai-assistants.md): Laravel Boost and these docs
+- [Defining workflows](docs/basic-usage/defining-workflows.md): step types, transitions, the fluent API, sync and seeding, versions and drafts, what the validator checks
+- [Running instances](docs/basic-usage/running-instances.md): starting, taking transitions, cancelling, reading instances, tasks, history, events
+- [Assignees](docs/basic-usage/assignees.md): starter, users, roles, permissions, the subject, earlier steps, custom types
+- [Conditions](docs/basic-usage/conditions.md): when(), fields, operators, decisions, conditional buttons
+- [Actions](docs/basic-usage/actions.md): notify, update_model, set_data, webhook, placeholders, failures, queued actions
+- [Step data with form-builder](docs/basic-usage/step-data.md): form-builder forms on the start step and tasks, skipping forms, entries
+- [The builder](docs/basic-usage/the-builder.md): the visual builder, keyboard use, saving and publishing
+- [The tester](docs/basic-usage/the-tester.md): the tester page and Workflows::simulate()
+- [Pages and routes](docs/basic-usage/pages-and-routes.md): Route::workflows(), Route::workflowTasks(), every route, linking to the start page, JSON
+- [Permissions](docs/basic-usage/permissions.md): the permissions, who can do what without them, the policies
+- [Configuration](docs/advanced-usage/configuration.md): every option in config/workflows.php
+- [Custom actions](docs/advanced-usage/custom-actions.md): writing and registering an action, the context, queued actions, the tester
+- [Custom assignees](docs/advanced-usage/custom-assignees.md): Workflows::assignee() resolvers
+- [The JSON format](docs/advanced-usage/json-format.md): the definition JSON, export and import
+- [Controllers and views](docs/advanced-usage/controllers-and-views.md): replacing controllers, hooks, Blade views and Inertia pages
+- [Notifications](docs/advanced-usage/notifications.md): the notify action with and without javaabu/notifications, your own class, links
+- [React](docs/advanced-usage/react.md): WorkflowBuilder, WorkflowGraph and every @javaabu/workflows export, the Blade entry, styles
+- [PHP API](docs/advanced-usage/php-api.md): every public PHP class and method
+- [Translatable workflows](docs/advanced-usage/translatable.md): optional javaabu/translatable support
+- [AI assistant](docs/advanced-usage/ai-assistant.md): the optional laravel/ai assistant and testing it
+- [Dhivehi and RTL](docs/advanced-usage/dhivehi-and-rtl.md): translations, right to left, strings to review
+- [Testing](docs/advanced-usage/testing.md): testing paths, runs, side effects and pages
+- [Questions and Security](docs/questions-and-security.md): where to get help
+- [Changelog](docs/changelog.md): the changelog
+- [About Us](docs/about-us.md): Javaabu
+- [Contributing to the docs](docs/contributing-to-docs.md): improving these docs

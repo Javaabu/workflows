@@ -1,0 +1,11 @@
+{
+    "position": 1.3,
+    "label": "Basic Usage",
+    "collapsible": true,
+    "collapsed": false,
+    "link": {
+        "type": "generated-index",
+        "slug": "/workflows/_categories/basic-usage",
+        "description": "Defining workflows, running instances, assignees, conditions, actions, step data with form-builder, the builder, the tester, the pages and permissions."
+    }
+}

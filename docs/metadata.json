@@ -1,0 +1,5 @@
+{
+    "name": "Workflows",
+    "description": "Dynamic workflows for Laravel: versioned definitions with steps, transitions, assignees and conditions, instances with tasks, history and events, fluent definitions you can seed, a keyboard-accessible drag-and-drop builder in Inertia React and Blade, developer-defined actions, step data collected with javaabu/form-builder forms, a workflow tester and an optional AI assistant",
+    "version": "1"
+}

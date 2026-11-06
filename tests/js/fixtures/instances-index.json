@@ -136,7 +136,6 @@
         "event_started": "Started",
         "event_entered": "Reached :step",
         "event_assigned": "Assigned to :assignees",
-        "event_transitioned": ":transition",
         "event_action_ran": "Ran :action",
         "event_action_failed": ":action failed",
         "event_completed": "Finished: :outcome",

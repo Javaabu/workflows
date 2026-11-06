@@ -1,0 +1,11 @@
+{
+    "position": 1.32,
+    "label": "Advanced Usage",
+    "collapsible": true,
+    "collapsed": true,
+    "link": {
+        "type": "generated-index",
+        "slug": "/workflows/_categories/advanced-usage",
+        "description": "Configuration, custom actions and assignees, the JSON format, events and the PHP API, controllers, policies and views, React, notifications, the AI assistant, translatable workflows, Dhivehi and RTL, and testing."
+    }
+}

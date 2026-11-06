@@ -140,7 +140,6 @@ class Strings
             'added' => __(':item added.'),
             'zoom_in' => __('Zoom in'),
             'zoom_out' => __('Zoom out'),
-            'fit' => __('Fit to screen'),
             'list_view' => __('Steps and transitions as a list'),
             'no_selection' => __('Select a step or a transition to edit it.'),
             'empty_canvas' => __('Add a start step, the tasks, and an end step, then connect them.'),

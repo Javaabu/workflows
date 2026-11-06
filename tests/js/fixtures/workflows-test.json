@@ -746,7 +746,6 @@
         "added": ":item added.",
         "zoom_in": "Zoom in",
         "zoom_out": "Zoom out",
-        "fit": "Fit to screen",
         "list_view": "Steps and transitions as a list",
         "no_selection": "Select a step or a transition to edit it.",
         "empty_canvas": "Add a start step, the tasks, and an end step, then connect them.",
