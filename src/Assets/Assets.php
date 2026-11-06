@@ -16,7 +16,9 @@ class Assets
 
     /**
      * The Blade entry: mounts the React builder on [data-workflow-builder] and
-     * the read-only diagram on [data-workflow-graph]. React is bundled in.
+     * the read-only diagram on [data-workflow-graph]. It renders React, so it's a
+     * react() asset: the prebuilt file in dist/ bundles React, and apps that
+     * build it with their own Vite need react, react-dom and the React plugin.
      */
     public const string BUILDER = 'workflows::builder';
 
@@ -27,14 +29,20 @@ class Assets
             ->pages()
             ->dist('../dist')
             ->style('styles', 'css/workflows.css')
-            ->script('builder', 'js/blade/builder.tsx', ['styles'])
-            ->npm([
-                '@javaabu/forms' => 'github:Javaabu/react-forms#next-gen',
-                '@javaabu/onu' => '^0.2.1',
-            ], [
-                'react' => '^19.0',
-                'react-dom' => '^19.0',
-                '@inertiajs/react' => '^2.0 || ^3.0',
-            ]);
+            ->react('builder', 'js/blade/builder.tsx', ['styles'])
+            // Only the Inertia pages (and code apps import as @javaabu/workflows)
+            // use these; the Blade entry imports none of them
+            ->npm(
+                [
+                    '@javaabu/forms' => 'github:Javaabu/react-forms#next-gen',
+                    '@javaabu/onu' => '^0.2.1',
+                ],
+                peer_dependencies: [
+                    'react' => '^19.0',
+                    'react-dom' => '^19.0',
+                    '@inertiajs/react' => '^2.0 || ^3.0',
+                ],
+                for: 'pages',
+            );
     }
 }

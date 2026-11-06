@@ -1,0 +1,17 @@
+{
+  "resources/css/workflows.css": {
+    "file": "assets/workflows-B547tVaW.css",
+    "name": "workflows",
+    "names": [
+      "workflows.css"
+    ],
+    "src": "resources/css/workflows.css",
+    "isEntry": true
+  },
+  "resources/js/blade/builder.tsx": {
+    "file": "assets/builder-sSAe2RID.js",
+    "name": "builder",
+    "src": "resources/js/blade/builder.tsx",
+    "isEntry": true
+  }
+}

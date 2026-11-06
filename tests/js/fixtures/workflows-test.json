@@ -1,0 +1,784 @@
+{
+    "status": null,
+    "layout": "layouts.app",
+    "layout_section": "content",
+    "workflow": {
+        "id": 1,
+        "key": "leave-request",
+        "name": "Leave request",
+        "description": null,
+        "subject_type": "leave_request",
+        "subject_label": "Leave Request",
+        "status": "published",
+        "status_label": "Published",
+        "is_locked": false,
+        "is_active": true,
+        "published_version": 1,
+        "draft_version": null,
+        "has_draft": false,
+        "instances_count": 0,
+        "active_count": 0,
+        "updated_at": "2026-11-06T10:00:00+00:00",
+        "urls": {
+            "show": "http://localhost/workflows/leave-request",
+            "edit": "http://localhost/workflows/leave-request/edit",
+            "test": "http://localhost/workflows/leave-request/test",
+            "instances": "http://localhost/workflows/leave-request/instances",
+            "versions": "http://localhost/workflows/leave-request/versions",
+            "export": "http://localhost/workflows/leave-request/export",
+            "destroy": "http://localhost/workflows/leave-request"
+        }
+    },
+    "definition": {
+        "workflows": 1,
+        "steps": [
+            {
+                "key": "start",
+                "type": "start",
+                "name": "Submitted",
+                "position": {
+                    "x": 40,
+                    "y": 120
+                }
+            },
+            {
+                "key": "review",
+                "type": "task",
+                "name": {
+                    "en": "Manager review",
+                    "dv": "މެނޭޖަރުގެ ރިވިއު"
+                },
+                "assignees": [
+                    {
+                        "type": "subject",
+                        "value": "manager"
+                    }
+                ],
+                "due_in": 48,
+                "position": {
+                    "x": 240,
+                    "y": 120
+                }
+            },
+            {
+                "key": "long_leave",
+                "type": "decision",
+                "name": "Long leave?",
+                "position": {
+                    "x": 440,
+                    "y": 120
+                }
+            },
+            {
+                "key": "hr_review",
+                "type": "task",
+                "name": "HR review",
+                "assignees": [
+                    {
+                        "type": "role",
+                        "value": "hr"
+                    }
+                ],
+                "position": {
+                    "x": 640,
+                    "y": 40
+                }
+            },
+            {
+                "key": "revise",
+                "type": "task",
+                "name": "Revise",
+                "assignees": [
+                    {
+                        "type": "starter"
+                    }
+                ],
+                "position": {
+                    "x": 240,
+                    "y": 280
+                }
+            },
+            {
+                "key": "approved",
+                "type": "end",
+                "name": "Approved",
+                "outcome": "approved",
+                "color": "success",
+                "position": {
+                    "x": 840,
+                    "y": 120
+                }
+            },
+            {
+                "key": "rejected",
+                "type": "end",
+                "name": "Rejected",
+                "outcome": "rejected",
+                "color": "danger",
+                "position": {
+                    "x": 440,
+                    "y": 280
+                }
+            }
+        ],
+        "transitions": [
+            {
+                "key": "submit",
+                "from": "start",
+                "to": "review"
+            },
+            {
+                "key": "approve",
+                "from": "review",
+                "to": "long_leave",
+                "label": {
+                    "en": "Approve",
+                    "dv": "ގަބޫލުކުރޭ"
+                },
+                "color": "success"
+            },
+            {
+                "key": "send_back",
+                "from": "review",
+                "to": "revise",
+                "label": "Send back",
+                "comment": "required"
+            },
+            {
+                "key": "reject",
+                "from": "review",
+                "to": "rejected",
+                "label": "Reject",
+                "color": "danger",
+                "comment": "required"
+            },
+            {
+                "key": "resubmit",
+                "from": "revise",
+                "to": "review",
+                "label": "Resubmit"
+            },
+            {
+                "key": "long",
+                "from": "long_leave",
+                "to": "hr_review",
+                "conditions": {
+                    "match": "all",
+                    "rules": [
+                        {
+                            "field": "subject.days",
+                            "operator": ">",
+                            "value": 5
+                        }
+                    ]
+                }
+            },
+            {
+                "key": "short",
+                "from": "long_leave",
+                "to": "approved"
+            },
+            {
+                "key": "hr_approve",
+                "from": "hr_review",
+                "to": "approved",
+                "label": "Approve",
+                "color": "success"
+            },
+            {
+                "key": "hr_reject",
+                "from": "hr_review",
+                "to": "rejected",
+                "label": "Reject",
+                "color": "danger"
+            }
+        ]
+    },
+    "catalog": {
+        "step_types": [
+            {
+                "type": "start",
+                "label": "Start",
+                "description": "Where it begins. Its form is filled by whoever starts it.",
+                "automatic": true
+            },
+            {
+                "type": "task",
+                "label": "Task",
+                "description": "Waits for someone to choose what happens next.",
+                "automatic": false
+            },
+            {
+                "type": "decision",
+                "label": "Decision",
+                "description": "Goes one way or another by itself, by the conditions.",
+                "automatic": true
+            },
+            {
+                "type": "action",
+                "label": "Automatic action",
+                "description": "Does something by itself, then moves on.",
+                "automatic": true
+            },
+            {
+                "type": "end",
+                "label": "End",
+                "description": "Where it finishes, with an outcome.",
+                "automatic": false
+            }
+        ],
+        "actions": [
+            {
+                "key": "notify",
+                "name": "Send a notification",
+                "description": "Tell the assignees, the starter or anyone else what happened.",
+                "icon": "bell",
+                "fields": {
+                    "to": {
+                        "type": "assignees",
+                        "label": "Send to",
+                        "required": true,
+                        "extra": {
+                            "assignees": "The task's assignees"
+                        }
+                    },
+                    "title": {
+                        "type": "text",
+                        "label": "Title",
+                        "help": "Use {{ days }} or {{ subject.title }} for values.",
+                        "localized": true
+                    },
+                    "message": {
+                        "type": "textarea",
+                        "label": "Message",
+                        "localized": true
+                    },
+                    "channels": {
+                        "type": "checkboxes",
+                        "label": "Channels",
+                        "options": {
+                            "database": "In the app",
+                            "mail": "Email",
+                            "sms": "SMS"
+                        }
+                    }
+                }
+            },
+            {
+                "key": "update_model",
+                "name": "Update the subject",
+                "description": "Set attributes of the record the workflow is about.",
+                "icon": "pencil",
+                "fields": {
+                    "attributes": {
+                        "type": "key_value",
+                        "label": "Attributes",
+                        "help": "Use {{ days }} or {{ subject.title }} for values.",
+                        "required": true
+                    }
+                }
+            },
+            {
+                "key": "set_data",
+                "name": "Set workflow data",
+                "description": "Remember values for later conditions and actions.",
+                "icon": "database",
+                "fields": {
+                    "values": {
+                        "type": "key_value",
+                        "label": "Values",
+                        "required": true
+                    }
+                }
+            },
+            {
+                "key": "webhook",
+                "name": "Call a webhook",
+                "description": "Send what happened to another system.",
+                "icon": "globe",
+                "fields": {
+                    "url": {
+                        "type": "text",
+                        "label": "URL",
+                        "required": true
+                    },
+                    "method": {
+                        "type": "select",
+                        "label": "Method",
+                        "options": {
+                            "POST": "POST",
+                            "PUT": "PUT",
+                            "PATCH": "PATCH",
+                            "GET": "GET"
+                        }
+                    },
+                    "headers": {
+                        "type": "key_value",
+                        "label": "Headers"
+                    },
+                    "payload": {
+                        "type": "key_value",
+                        "label": "Payload",
+                        "help": "Leave it empty to send the instance, its step and its data."
+                    },
+                    "secret": {
+                        "type": "text",
+                        "label": "Signing secret"
+                    }
+                }
+            }
+        ],
+        "assignee_types": [
+            {
+                "type": "starter",
+                "label": "Whoever started it",
+                "needs_value": false,
+                "help": null
+            },
+            {
+                "type": "role",
+                "label": "Everyone with a role",
+                "needs_value": true,
+                "help": null
+            },
+            {
+                "type": "permission",
+                "label": "Everyone with a permission",
+                "needs_value": true,
+                "help": null
+            },
+            {
+                "type": "subject",
+                "label": "Someone related to the subject",
+                "needs_value": true,
+                "help": "A relation or attribute of the subject, like manager."
+            },
+            {
+                "type": "step",
+                "label": "Whoever did an earlier step",
+                "needs_value": true,
+                "help": null
+            },
+            {
+                "type": "user",
+                "label": "A user",
+                "needs_value": true,
+                "help": "Their type and key, like admin:4."
+            },
+            {
+                "type": "assignees",
+                "label": "The task's assignees",
+                "needs_value": false,
+                "help": null,
+                "notify_only": true
+            }
+        ],
+        "roles": [
+            "super_admin"
+        ],
+        "permissions": [
+            "delete_form_entries",
+            "delete_forms",
+            "delete_others_notifications",
+            "delete_roles",
+            "delete_workflows",
+            "edit_forms",
+            "edit_roles",
+            "edit_workflows",
+            "export_form_entries",
+            "manage_workflow_instances",
+            "publish_forms",
+            "publish_workflows",
+            "start_workflows",
+            "view_form_entries",
+            "view_forms",
+            "view_others_notifications",
+            "view_roles",
+            "view_workflow_instances",
+            "view_workflows"
+        ],
+        "forms": [],
+        "operators": [
+            {
+                "value": "=",
+                "label": "is",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": "!=",
+                "label": "is not",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": ">",
+                "label": "is more than",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": ">=",
+                "label": "is at least",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": "<",
+                "label": "is less than",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": "<=",
+                "label": "is at most",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": "in",
+                "label": "is one of",
+                "unary": false,
+                "list": true
+            },
+            {
+                "value": "not_in",
+                "label": "is not one of",
+                "unary": false,
+                "list": true
+            },
+            {
+                "value": "contains",
+                "label": "contains",
+                "unary": false,
+                "list": false
+            },
+            {
+                "value": "filled",
+                "label": "is filled",
+                "unary": true,
+                "list": false
+            },
+            {
+                "value": "blank",
+                "label": "is blank",
+                "unary": true,
+                "list": false
+            }
+        ],
+        "colors": [
+            {
+                "value": "primary",
+                "label": "Primary"
+            },
+            {
+                "value": "secondary",
+                "label": "Grey"
+            },
+            {
+                "value": "success",
+                "label": "Green"
+            },
+            {
+                "value": "info",
+                "label": "Blue"
+            },
+            {
+                "value": "warning",
+                "label": "Orange"
+            },
+            {
+                "value": "danger",
+                "label": "Red"
+            }
+        ],
+        "comments": [
+            {
+                "value": "none",
+                "label": "No comment"
+            },
+            {
+                "value": "optional",
+                "label": "Optional comment"
+            },
+            {
+                "value": "required",
+                "label": "Comment required"
+            }
+        ],
+        "locales": [
+            {
+                "code": "en",
+                "name": "English",
+                "rtl": false
+            }
+        ]
+    },
+    "tasks": [
+        {
+            "key": "review",
+            "name": "Manager review",
+            "transitions": [
+                {
+                    "key": "approve",
+                    "label": "Approve"
+                },
+                {
+                    "key": "send_back",
+                    "label": "Send back"
+                },
+                {
+                    "key": "reject",
+                    "label": "Reject"
+                }
+            ]
+        },
+        {
+            "key": "hr_review",
+            "name": "HR review",
+            "transitions": [
+                {
+                    "key": "hr_approve",
+                    "label": "Approve"
+                },
+                {
+                    "key": "hr_reject",
+                    "label": "Reject"
+                }
+            ]
+        },
+        {
+            "key": "revise",
+            "name": "Revise",
+            "transitions": [
+                {
+                    "key": "resubmit",
+                    "label": "Resubmit"
+                }
+            ]
+        }
+    ],
+    "input": {
+        "data": "{}",
+        "subject": "{\n    \"days\": 9\n}",
+        "choices": {
+            "review": "approve"
+        },
+        "draft": false
+    },
+    "simulation": {
+        "status": "waiting",
+        "outcome": null,
+        "message": "Waiting at HR review: choose what happens there.",
+        "path": [
+            {
+                "step": "start",
+                "type": "start",
+                "name": "Submitted",
+                "actions": [],
+                "transition": "submit",
+                "transition_label": null,
+                "reason": "default",
+                "transition_actions": []
+            },
+            {
+                "step": "review",
+                "type": "task",
+                "name": "Manager review",
+                "actions": [],
+                "transition": "approve",
+                "transition_label": "Approve",
+                "reason": "chosen",
+                "transition_actions": []
+            },
+            {
+                "step": "long_leave",
+                "type": "decision",
+                "name": "Long leave?",
+                "actions": [],
+                "transition": "long",
+                "transition_label": null,
+                "reason": "conditions",
+                "transition_actions": []
+            },
+            {
+                "step": "hr_review",
+                "type": "task",
+                "name": "HR review",
+                "actions": [],
+                "options": [
+                    {
+                        "key": "hr_approve",
+                        "label": "Approve",
+                        "to": "approved",
+                        "available": true
+                    },
+                    {
+                        "key": "hr_reject",
+                        "label": "Reject",
+                        "to": "rejected",
+                        "available": true
+                    }
+                ]
+            }
+        ],
+        "options": [
+            {
+                "key": "hr_approve",
+                "label": "Approve",
+                "to": "approved",
+                "available": true
+            },
+            {
+                "key": "hr_reject",
+                "label": "Reject",
+                "to": "rejected",
+                "available": true
+            }
+        ],
+        "data": []
+    },
+    "has_draft": false,
+    "urls": {
+        "run": "http://localhost/workflows/leave-request/test",
+        "back": "http://localhost/workflows/leave-request"
+    },
+    "strings": {
+        "back": "Back",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "view": "View",
+        "actions": "Actions",
+        "confirm_delete": "Delete this? This can't be undone.",
+        "previous_page": "Previous",
+        "next_page": "Next",
+        "page_of": "Page :page of :pages",
+        "none": "None",
+        "title": "Workflows",
+        "description": "Steps, people and rules for getting things approved and done.",
+        "create": "New workflow",
+        "search": "Search workflows",
+        "search_button": "Search",
+        "empty": "There are no workflows yet.",
+        "no_results": "No workflows match your search.",
+        "name": "Name",
+        "status": "Status",
+        "version": "Version",
+        "instances": "Instances",
+        "active": "Active",
+        "locked": "Defined in code",
+        "inactive": "Not taking new instances",
+        "open_builder": "Open",
+        "versions": "Versions",
+        "published_at": "Published",
+        "author": "By",
+        "draft": "Draft",
+        "current": "Current",
+        "test": "Test",
+        "export": "Export",
+        "settings": "Settings",
+        "assistant": "Build with the assistant",
+        "assistant_help": "Describe the workflow: its steps, who does each one and what happens next. The assistant makes a draft for you to review.",
+        "assistant_placeholder": "Leave requests go to the manager; longer than 5 days also to HR…",
+        "assistant_submit": "Make a draft",
+        "assistant_change": "Change with the assistant",
+        "assistant_change_help": "Describe what to change. The assistant edits the draft.",
+        "canvas": "Workflow diagram",
+        "canvas_help": "Tab to a step. Arrow keys move it (with Shift, further). Enter edits it, Delete removes it.",
+        "add_step": "Add a step",
+        "add_transition": "Add a transition",
+        "transition_to": "Go to",
+        "connect": "Connect",
+        "connect_help": "Drag from a step's handle to another step, or add the transition here.",
+        "step": "Step",
+        "steps": "Steps",
+        "transition": "Transition",
+        "transitions": "Transitions",
+        "key": "Key",
+        "type": "Type",
+        "label": "Label",
+        "step_name": "Name",
+        "step_description": "Description",
+        "from": "From",
+        "to": "To",
+        "assignees": "Assigned to",
+        "add_assignee": "Add an assignee",
+        "remove": "Remove",
+        "form": "Form",
+        "form_help": "The javaabu/form-builder form that collects this step's data.",
+        "no_form": "No form",
+        "form_version": "Version",
+        "latest_version": "The published version",
+        "step_actions": "When the step starts",
+        "transition_actions": "When it's taken",
+        "add_action": "Add an action",
+        "conditions": "Conditions",
+        "conditions_help": "Only when these hold. Fields are the workflow's data, or subject.… and starter.…",
+        "match_all": "All of them",
+        "match_any": "Any of them",
+        "add_condition": "Add a condition",
+        "field": "Field",
+        "operator": "Operator",
+        "value": "Value",
+        "values_help": "Separate values with commas.",
+        "comment": "Comment",
+        "skip_form": "Skip the step's form",
+        "outcome": "Outcome",
+        "color": "Colour",
+        "due_in": "Due in (hours)",
+        "save_draft": "Save draft",
+        "saved": "Draft saved.",
+        "saving": "Saving…",
+        "unsaved": "Unsaved changes",
+        "publish": "Publish",
+        "discard": "Discard draft",
+        "confirm_discard": "Discard the draft? The published version stays.",
+        "confirm_publish": "Publish the draft? New instances will start on it.",
+        "problems": "Fix these before publishing",
+        "unreachable": "Nothing leads to these steps",
+        "read_only": "This workflow is read-only here.",
+        "locked_help": "It's defined in code. Change it there and run the seeder.",
+        "moved": ":step moved.",
+        "selected": ":item selected.",
+        "deleted": ":item deleted.",
+        "added": ":item added.",
+        "zoom_in": "Zoom in",
+        "zoom_out": "Zoom out",
+        "fit": "Fit to screen",
+        "list_view": "Steps and transitions as a list",
+        "no_selection": "Select a step or a transition to edit it.",
+        "empty_canvas": "Add a start step, the tasks, and an end step, then connect them.",
+        "new_step": "New step",
+        "new_transition": "New transition",
+        "settings_key": "Name",
+        "settings_value": "Value",
+        "add_row": "Add",
+        "localized_in": ":label (:language)",
+        "tester": "Test the workflow",
+        "tester_help": "See the path a run takes with sample data. Nothing is saved and no actions run.",
+        "sample_data": "Sample data",
+        "sample_data_help": "What the start form would collect, as JSON: {\"days\": 7}",
+        "sample_subject": "Sample subject",
+        "sample_subject_help": "Attributes of the record it's about, as JSON: {\"amount\": 1500}",
+        "choices": "At each task",
+        "choices_help": "What the assignee chooses. Leave it empty to stop there.",
+        "stop_here": "Stop here",
+        "test_draft": "Test the draft",
+        "run": "Run the test",
+        "result": "Result",
+        "path": "Path",
+        "would_run": "Would run",
+        "took": "Then",
+        "reason_conditions": "its conditions held",
+        "reason_default": "no other way matched",
+        "reason_chosen": "chosen",
+        "status_completed": "Completed",
+        "status_waiting": "Waiting",
+        "status_stuck": "Stuck",
+        "status_looped": "Loops",
+        "final_data": "Data at the end",
+        "invalid_json": "This isn't valid JSON."
+    }
+}

@@ -1,0 +1,161 @@
+{
+    "status": null,
+    "layout": "layouts.app",
+    "layout_section": "content",
+    "form": {
+        "stencil": 1,
+        "id": "workflow-settings",
+        "action": "http://localhost/workflows/leave-request",
+        "method": "PATCH",
+        "operation": "edit",
+        "submit": "Save",
+        "state": {
+            "key": "leave-request",
+            "subject_type": "leave_request",
+            "name": "Leave request",
+            "description": null,
+            "is_active": true
+        },
+        "live": null,
+        "components": [
+            {
+                "type": "section",
+                "key": "section-0",
+                "props": {
+                    "heading": "Workflow",
+                    "columns": {
+                        "default": 1,
+                        "md": 2
+                    }
+                },
+                "children": [
+                    {
+                        "type": "text",
+                        "key": "key",
+                        "name": "key",
+                        "component": "Text",
+                        "props": {
+                            "label": "Key",
+                            "required": true,
+                            "help": "Lowercase letters, numbers, dashes and underscores. Code refers to the workflow by it.",
+                            "maxLength": 100
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "key": "subject_type",
+                        "name": "subject_type",
+                        "component": "Text",
+                        "props": {
+                            "label": "Subject",
+                            "help": "The model instances are about, as its morph alias or class. Leave it empty for workflows about nothing in particular.",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "key": "name",
+                        "name": "name",
+                        "component": "Text",
+                        "props": {
+                            "label": "Name",
+                            "required": true,
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "type": "textarea",
+                        "key": "description",
+                        "name": "description",
+                        "component": "Textarea",
+                        "props": {
+                            "label": "Description",
+                            "rows": 3
+                        }
+                    },
+                    {
+                        "type": "checkbox",
+                        "key": "is_active",
+                        "name": "is_active",
+                        "component": "Checkbox",
+                        "props": {
+                            "label": "Taking new instances"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "record": {
+        "id": 1,
+        "key": "leave-request",
+        "name": "Leave request",
+        "description": null,
+        "subject_type": "leave_request",
+        "subject_label": "Leave Request",
+        "status": "published",
+        "status_label": "Published",
+        "is_locked": false,
+        "is_active": true,
+        "published_version": 1,
+        "draft_version": null,
+        "has_draft": false,
+        "instances_count": 0,
+        "active_count": 0,
+        "updated_at": "2026-11-06T10:00:00+00:00",
+        "urls": {
+            "show": "http://localhost/workflows/leave-request",
+            "edit": "http://localhost/workflows/leave-request/edit",
+            "test": "http://localhost/workflows/leave-request/test",
+            "instances": "http://localhost/workflows/leave-request/instances",
+            "versions": "http://localhost/workflows/leave-request/versions",
+            "export": "http://localhost/workflows/leave-request/export",
+            "destroy": "http://localhost/workflows/leave-request"
+        }
+    },
+    "title": "Settings",
+    "back_url": "http://localhost/workflows/leave-request",
+    "strings": {
+        "back": "Back",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "view": "View",
+        "actions": "Actions",
+        "confirm_delete": "Delete this? This can't be undone.",
+        "previous_page": "Previous",
+        "next_page": "Next",
+        "page_of": "Page :page of :pages",
+        "none": "None",
+        "title": "Workflows",
+        "description": "Steps, people and rules for getting things approved and done.",
+        "create": "New workflow",
+        "search": "Search workflows",
+        "search_button": "Search",
+        "empty": "There are no workflows yet.",
+        "no_results": "No workflows match your search.",
+        "name": "Name",
+        "status": "Status",
+        "version": "Version",
+        "instances": "Instances",
+        "active": "Active",
+        "locked": "Defined in code",
+        "inactive": "Not taking new instances",
+        "open_builder": "Open",
+        "versions": "Versions",
+        "published_at": "Published",
+        "author": "By",
+        "draft": "Draft",
+        "current": "Current",
+        "test": "Test",
+        "export": "Export",
+        "settings": "Settings",
+        "assistant": "Build with the assistant",
+        "assistant_help": "Describe the workflow: its steps, who does each one and what happens next. The assistant makes a draft for you to review.",
+        "assistant_placeholder": "Leave requests go to the manager; longer than 5 days also to HR…",
+        "assistant_submit": "Make a draft",
+        "assistant_change": "Change with the assistant",
+        "assistant_change_help": "Describe what to change. The assistant edits the draft."
+    }
+}

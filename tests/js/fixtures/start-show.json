@@ -1,0 +1,139 @@
+{
+    "status": null,
+    "layout": "layouts.app",
+    "layout_section": "content",
+    "workflow": {
+        "key": "suggestion",
+        "name": "Suggestion",
+        "description": null
+    },
+    "subject": null,
+    "form": {
+        "stencil": 1,
+        "id": "form-builder-leave-request",
+        "method": "POST",
+        "operation": "create",
+        "embedded": true,
+        "state": {
+            "leave_type": null,
+            "days": null,
+            "reason": null
+        },
+        "live": null,
+        "components": [
+            {
+                "type": "section",
+                "key": "section-main",
+                "children": [
+                    {
+                        "type": "select",
+                        "key": "leave_type",
+                        "name": "leave_type",
+                        "component": "Select",
+                        "props": {
+                            "label": "Leave type",
+                            "required": true,
+                            "options": [
+                                {
+                                    "value": "annual",
+                                    "label": "Annual"
+                                },
+                                {
+                                    "value": "sick",
+                                    "label": "Sick"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "key": "days",
+                        "name": "days",
+                        "component": "Number",
+                        "props": {
+                            "label": "Days",
+                            "required": true
+                        }
+                    },
+                    {
+                        "type": "textarea",
+                        "key": "reason",
+                        "name": "reason",
+                        "component": "Textarea",
+                        "props": {
+                            "label": "Reason",
+                            "thaana": true,
+                            "maxLength": 65535
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "urls": {
+        "store": "http://localhost/tasks/start/suggestion",
+        "back": "http://localhost/tasks"
+    },
+    "strings": {
+        "back": "Back",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "view": "View",
+        "actions": "Actions",
+        "confirm_delete": "Delete this? This can't be undone.",
+        "previous_page": "Previous",
+        "next_page": "Next",
+        "page_of": "Page :page of :pages",
+        "none": "None",
+        "instances": "Instances",
+        "instance": "Instance :id",
+        "tasks": "My tasks",
+        "tasks_description": "What's waiting for you.",
+        "started_by_me": "Started by me",
+        "assigned_to_me": "Assigned to me",
+        "no_tasks": "Nothing is waiting for you.",
+        "no_started": "You haven't started anything.",
+        "no_instances": "There are no instances yet.",
+        "workflow": "Workflow",
+        "subject": "About",
+        "step": "Step",
+        "status": "Status",
+        "started": "Started",
+        "started_by": "Started by",
+        "completed_at": "Finished",
+        "due": "Due",
+        "overdue": "Overdue",
+        "outcome": "Outcome",
+        "assignees": "Assigned to",
+        "open": "Open",
+        "history": "History",
+        "data": "Details",
+        "comment": "Comment",
+        "comment_required": "Comment (required)",
+        "your_turn": "Your turn",
+        "waiting_for": "Waiting for :assignees",
+        "cancel_instance": "Cancel this",
+        "cancel_reason": "Why?",
+        "confirm_cancel": "Cancel it? It stops here, and its tasks close.",
+        "start": "Start",
+        "start_workflow": "Start :workflow",
+        "start_something": "Start something",
+        "status_active": "In progress",
+        "status_completed": "Completed",
+        "status_cancelled": "Cancelled",
+        "all_statuses": "All",
+        "filter": "Filter",
+        "event_started": "Started",
+        "event_entered": "Reached :step",
+        "event_assigned": "Assigned to :assignees",
+        "event_transitioned": ":transition",
+        "event_action_ran": "Ran :action",
+        "event_action_failed": ":action failed",
+        "event_completed": "Finished: :outcome",
+        "event_cancelled": "Cancelled",
+        "system": "Automatically",
+        "title": "Start Suggestion"
+    }
+}

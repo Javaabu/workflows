@@ -1,0 +1,281 @@
+{
+    "status": null,
+    "layout": "layouts.app",
+    "layout_section": "content",
+    "instance": {
+        "id": 1,
+        "title": "Instance 1",
+        "workflow": "Suggestion",
+        "workflow_key": "suggestion",
+        "version": 1,
+        "status": "active",
+        "status_label": "In progress",
+        "outcome": null,
+        "outcome_label": null,
+        "step": "review",
+        "step_name": "Review",
+        "step_color": null,
+        "subject": null,
+        "starter": "އަޙްމަދު",
+        "assignees": [
+            "view_workflows"
+        ],
+        "due_at": "2026-11-07T10:00:00+00:00",
+        "due_at_label": "7 November 2026, 10:00",
+        "overdue": false,
+        "started_at": "2026-11-06T10:00:00+00:00",
+        "started_at_label": "6 November 2026, 10:00",
+        "completed_at_label": null,
+        "url": null
+    },
+    "workflow": {
+        "key": "suggestion",
+        "name": "Suggestion"
+    },
+    "history": [
+        {
+            "id": 1,
+            "event": "started",
+            "label": "Started",
+            "step": "start",
+            "transition": null,
+            "color": null,
+            "actor": "އަޙްމަދު",
+            "comment": null,
+            "error": null,
+            "at": "2026-11-06T10:00:00+00:00",
+            "at_label": "6 November 2026, 10:00"
+        },
+        {
+            "id": 2,
+            "event": "entered",
+            "label": "Reached Submitted",
+            "step": "start",
+            "transition": null,
+            "color": null,
+            "actor": null,
+            "comment": null,
+            "error": null,
+            "at": "2026-11-06T10:00:00+00:00",
+            "at_label": "6 November 2026, 10:00"
+        },
+        {
+            "id": 3,
+            "event": "transitioned",
+            "label": "Submitted to Review",
+            "step": "review",
+            "transition": "submit",
+            "color": null,
+            "actor": null,
+            "comment": null,
+            "error": null,
+            "at": "2026-11-06T10:00:00+00:00",
+            "at_label": "6 November 2026, 10:00"
+        },
+        {
+            "id": 4,
+            "event": "entered",
+            "label": "Reached Review",
+            "step": "review",
+            "transition": null,
+            "color": null,
+            "actor": null,
+            "comment": null,
+            "error": null,
+            "at": "2026-11-06T10:00:00+00:00",
+            "at_label": "6 November 2026, 10:00"
+        },
+        {
+            "id": 5,
+            "event": "assigned",
+            "label": "Assigned to view_workflows",
+            "step": "review",
+            "transition": null,
+            "color": null,
+            "actor": null,
+            "comment": null,
+            "error": null,
+            "at": "2026-11-06T10:00:00+00:00",
+            "at_label": "6 November 2026, 10:00"
+        }
+    ],
+    "entries": [
+        {
+            "step": "start",
+            "name": "Submitted",
+            "display": {
+                "stencil": 1,
+                "id": "form-builder-entry-1",
+                "method": "POST",
+                "operation": "view",
+                "embedded": true,
+                "state": [],
+                "live": null,
+                "components": [
+                    {
+                        "type": "section",
+                        "key": "section-main",
+                        "children": [
+                            {
+                                "type": "text-entry",
+                                "key": "entry-leave_type",
+                                "props": {
+                                    "name": "leave_type",
+                                    "label": "Leave type",
+                                    "value": "Sick"
+                                }
+                            },
+                            {
+                                "type": "text-entry",
+                                "key": "entry-days",
+                                "props": {
+                                    "name": "days",
+                                    "label": "Days",
+                                    "value": "2"
+                                }
+                            },
+                            {
+                                "type": "text-entry",
+                                "key": "entry-reason",
+                                "props": {
+                                    "name": "reason",
+                                    "label": "Reason",
+                                    "value": "ބަލި",
+                                    "multiline": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "data": [],
+    "transitions": [
+        {
+            "key": "accept",
+            "label": "ގަބޫލު",
+            "color": "success",
+            "comment": "optional",
+            "skips_form": false
+        },
+        {
+            "key": "decline",
+            "label": "Decline",
+            "color": "danger",
+            "comment": "required",
+            "skips_form": true
+        }
+    ],
+    "form": {
+        "stencil": 1,
+        "id": "form-builder-leave-review",
+        "method": "POST",
+        "operation": "create",
+        "embedded": true,
+        "state": {
+            "approved_days": null,
+            "note": null
+        },
+        "live": null,
+        "components": [
+            {
+                "type": "section",
+                "key": "section-main",
+                "children": [
+                    {
+                        "type": "text",
+                        "key": "approved_days",
+                        "name": "approved_days",
+                        "component": "Number",
+                        "props": {
+                            "label": "Approved days",
+                            "required": true
+                        }
+                    },
+                    {
+                        "type": "textarea",
+                        "key": "note",
+                        "name": "note",
+                        "component": "Textarea",
+                        "props": {
+                            "label": "Note",
+                            "thaana": true,
+                            "maxLength": 65535
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "can": {
+        "act": true,
+        "cancel": false
+    },
+    "urls": {
+        "transition": "http://localhost/tasks/1/transition",
+        "cancel": "http://localhost/tasks/1/cancel",
+        "back": "http://localhost/tasks"
+    },
+    "strings": {
+        "back": "Back",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "view": "View",
+        "actions": "Actions",
+        "confirm_delete": "Delete this? This can't be undone.",
+        "previous_page": "Previous",
+        "next_page": "Next",
+        "page_of": "Page :page of :pages",
+        "none": "None",
+        "instances": "Instances",
+        "instance": "Instance :id",
+        "tasks": "My tasks",
+        "tasks_description": "What's waiting for you.",
+        "started_by_me": "Started by me",
+        "assigned_to_me": "Assigned to me",
+        "no_tasks": "Nothing is waiting for you.",
+        "no_started": "You haven't started anything.",
+        "no_instances": "There are no instances yet.",
+        "workflow": "Workflow",
+        "subject": "About",
+        "step": "Step",
+        "status": "Status",
+        "started": "Started",
+        "started_by": "Started by",
+        "completed_at": "Finished",
+        "due": "Due",
+        "overdue": "Overdue",
+        "outcome": "Outcome",
+        "assignees": "Assigned to",
+        "open": "Open",
+        "history": "History",
+        "data": "Details",
+        "comment": "Comment",
+        "comment_required": "Comment (required)",
+        "your_turn": "Your turn",
+        "waiting_for": "Waiting for :assignees",
+        "cancel_instance": "Cancel this",
+        "cancel_reason": "Why?",
+        "confirm_cancel": "Cancel it? It stops here, and its tasks close.",
+        "start": "Start",
+        "start_workflow": "Start :workflow",
+        "start_something": "Start something",
+        "status_active": "In progress",
+        "status_completed": "Completed",
+        "status_cancelled": "Cancelled",
+        "all_statuses": "All",
+        "filter": "Filter",
+        "event_started": "Started",
+        "event_entered": "Reached :step",
+        "event_assigned": "Assigned to :assignees",
+        "event_transitioned": ":transition",
+        "event_action_ran": "Ran :action",
+        "event_action_failed": ":action failed",
+        "event_completed": "Finished: :outcome",
+        "event_cancelled": "Cancelled",
+        "system": "Automatically"
+    }
+}

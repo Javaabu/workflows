@@ -118,3 +118,56 @@ jobs:
       - name: Check code style
         run: vendor/bin/pint --test
 
+  js:
+    runs-on: ubuntu-latest
+
+    name: Builder, React pages and Blade entry
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      # The pages import React code of stencil and form-builder from vendor
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      # Keep the store out of node_modules, where @javaabu/forms' prepare build
+      # can't emit portable types (Javaabu/react-forms#20)
+      - name: Install npm dependencies
+        run: pnpm install --frozen-lockfile --store-dir "$RUNNER_TEMP/pnpm-store"
+
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+
+      - name: Tests with coverage
+        run: pnpm test:coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/lcov.info
+          flags: js
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Build the examples
+        run: pnpm examples:build
+
+      - name: Check that the committed dist is up to date
+        run: |
+          pnpm build
+          git diff --exit-code -- dist || (echo "dist is out of date: run pnpm build and commit it." && exit 1)

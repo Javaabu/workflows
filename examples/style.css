@@ -1,0 +1,60 @@
+@import "../resources/css/workflows.css";
+
+body {
+  font-family: system-ui, "MV Faseyha", sans-serif;
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+main {
+  max-inline-size: 56rem;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+ol {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+li[data-widget-id] {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+li[data-sorting="true"] {
+  outline: 2px solid #2563eb;
+}
+
+li[data-dragging="true"] {
+  opacity: 0.5;
+}
+
+[data-form-builder-handle] {
+  cursor: grab;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
