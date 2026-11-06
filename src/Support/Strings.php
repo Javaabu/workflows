@@ -239,7 +239,6 @@ class Strings
             'event_started' => __('Started'),
             'event_entered' => __('Reached :step'),
             'event_assigned' => __('Assigned to :assignees'),
-            'event_transitioned' => __(':transition'),
             'event_action_ran' => __('Ran :action'),
             'event_action_failed' => __(':action failed'),
             'event_completed' => __('Finished: :outcome'),
